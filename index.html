@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Quiz du Jour - Testez vos connaissances quotidiennement et gagnez des prix">
+    <meta name="theme-color" content="#0f0c29">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Quiz du Jour - DÃ©fi Quotidien (DEMO)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-dark-primary: #0f0c29;
+            --color-dark-secondary: #302b63;
+            --color-dark-tertiary: #24243e;
+            --color-accent-gold: #ffd700;
+            --color-accent-gold-dark: #ccac00;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #a0aec0;
+            --color-text-muted: #718096;
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-glass-bg: rgba(255, 255, 255, 0.05);
+            --color-glass-bg-hover: rgba(255, 255, 255, 0.08);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-gold: 0 0 20px rgba(255, 215, 0, 0.3);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 2rem;
+            --font-size-4xl: 2.5rem;
+            --container-max-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--color-dark-primary) 0%, var(--color-dark-secondary) 50%, var(--color-dark-primary) 100%);
+            background-attachment: fixed;
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(48, 43, 99, 0.4) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glass Effect Utilities */
+        .glass {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .glass-hover {
+            transition: all var(--transition-normal);
+        }
+
+        .glass-hover:hover {
+            background: var(--color-glass-bg-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            animation: fadeIn var(--transition-normal);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header/Navigation */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 12, 41, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .header-content {
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: var(--color-dark-primary);
+        }
+
+        .header-nav {
+            display: none;
+            gap: var(--spacing-sm);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .demo-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            background: var(--color-accent-gold);
+            color: var(--color-dark-primary);
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-dark-primary);
+            font-size: var(--font-size-sm);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        .user-score {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: var(--font-size-xs);
+            color: var(--color-accent-gold);
+            font-weight: 600;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--spacing-sm);
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--color-text-primary);
+            transition: all var(--transition-normal);
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 65px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 12, 41, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-lg);
+            transform: translateY(-100%);
+            transition: transform var(--transition-normal);
+            z-index: 99;
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+        }
+
+        .mobile-menu nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            color: var(--color-dark-primary);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--color-glass-bg);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--color-glass-bg-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .btn-ghost:hover:not(:disabled) {
+            background: var(--color-glass-bg);
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-sm);
+        }
+
+        .btn-lg {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            font-size: var(--font-size-lg);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        /* Content Container */
+        .content {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: var(--container-max-width);
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .card-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
+        }
+
+        .card-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+        }
+
+        .card-body {
+            flex: 1;
+        }
+
+        .card-footer {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-base);
+            font-family: inherit;
+            transition: all var(--transition-normal);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-accent-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .form-error {
+            color: var(--color-error);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .form-help {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* LOGIN MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--spacing-lg);
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            max-width: 440px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-logo {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .modal-logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            border-radius: var(--radius-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-3xl);
+            font-weight: 900;
+            color: var(--color-dark-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: var(--spacing-sm);
+            background: linear-gradient(135deg, var(--color-accent-gold), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: var(--color-accent-gold);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-lg);
+        }
+
+        .modal-note {
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--color-glass-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+        }
+
+        /* AUTH SCREEN */
+        .auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: var(--spacing-lg);
+            position: relative;
+        }
+
+        .auth-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .auth-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .auth-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .auth-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .auth-circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .auth-card {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .auth-logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            border-radius: var(--radius-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-3xl);
+            font-weight: 900;
+            color: var(--color-dark-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .auth-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: var(--spacing-sm);
+            background: linear-gradient(135deg, var(--color-accent-gold), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            background: var(--color-glass-bg);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border-radius: var(--radius-sm);
+        }
+
+        .auth-tab.active {
+            background: var(--color-accent-gold);
+            color: var(--color-dark-primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            color: var(--color-text-muted);
+            font-size: var(--font-size-sm);
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--color-border);
+        }
+
+        /* HOME/DASHBOARD SCREEN */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .dashboard-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .dashboard-subtitle {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-accent-gold);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        .week-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .day-card {
+            position: relative;
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-border);
+        }
+
+        .day-card.available {
+            border-color: var(--color-accent-gold);
+        }
+
+        .day-card.available::before {
+            background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+        }
+
+        .day-card.completed {
+            border-color: var(--color-success);
+        }
+
+        .day-card.completed::before {
+            background: var(--color-success);
+        }
+
+        .day-card.qualified {
+            border-color: var(--color-accent-gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .day-card.qualified::before {
+            background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+        }
+
+        .day-card.eliminated {
+            border-color: var(--color-error);
+            opacity: 0.7;
+        }
+
+        .day-card.eliminated::before {
+            background: var(--color-error);
+        }
+
+        .day-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .day-card:not(.locked):hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .day-number {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .day-theme {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            margin-top: var(--spacing-sm);
+        }
+
+        .day-status.available {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--color-accent-gold);
+        }
+
+        .day-status.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--color-success);
+        }
+
+        .day-status.qualified {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--color-accent-gold);
+        }
+
+        .day-status.eliminated {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--color-error);
+        }
+
+        .day-status.locked {
+            background: rgba(113, 128, 150, 0.2);
+            color: var(--color-text-muted);
+        }
+
+        .day-score {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--color-accent-gold);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* QUIZ SCREEN */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .quiz-theme {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
+        }
+
+        .quiz-score {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 700;
+            color: var(--color-accent-gold);
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px var(--spacing-md);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .difficulty-badge.facile {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--color-success);
+        }
+
+        .difficulty-badge.moyen {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--color-warning);
+        }
+
+        .difficulty-badge.difficile {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--color-error);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--color-glass-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: var(--spacing-md);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            transition: width var(--transition-normal);
+            border-radius: 4px;
+        }
+
+        .quiz-question-container {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+        }
+
+        .timer-container {
+            position: absolute;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+        }
+
+        .timer-circle {
+            width: 80px;
+            height: 80px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle-bg {
+            fill: none;
+            stroke: var(--color-glass-bg);
+            stroke-width: 4;
+        }
+
+        .timer-circle-progress {
+            fill: none;
+            stroke: var(--color-accent-gold);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-accent-gold);
+        }
+
+        .question-number {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .question-text {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-xl);
+            padding-right: 100px;
+        }
+
+        .answers-grid {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .answer-option {
+            background: var(--color-glass-bg);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .answer-option:hover {
+            border-color: var(--color-accent-gold);
+            background: var(--color-glass-bg-hover);
+            transform: translateX(4px);
+        }
+
+        .answer-option.selected {
+            border-color: var(--color-accent-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .answer-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .answer-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .answer-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-glass-bg);
+            border: 2px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .answer-letter {
+            background: var(--color-accent-gold);
+            color: var(--color-dark-primary);
+            border-color: var(--color-accent-gold);
+        }
+
+        .answer-option.correct .answer-letter {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+
+        .answer-option.incorrect .answer-letter {
+            background: var(--color-error);
+            color: white;
+            border-color: var(--color-error);
+        }
+
+        .answer-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .quiz-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+        }
+
+        /* RESULTS SCREEN */
+        .results-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .results-header {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-4xl);
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .results-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .results-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+        }
+
+        .results-score-big {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .results-score-value {
+            font-size: var(--font-size-4xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .results-score-label {
+            color: var(--color-text-secondary);
+        }
+
+        .results-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .breakdown-item {
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+        }
+
+        .breakdown-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .breakdown-value.success {
+            color: var(--color-success);
+        }
+
+        .breakdown-value.error {
+            color: var(--color-error);
+        }
+
+        .breakdown-value.warning {
+            color: var(--color-warning);
+        }
+
+        .breakdown-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .qualification-status {
+            background: var(--color-glass-bg);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .qualification-status.qualified {
+            border-color: var(--color-accent-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .qualification-status.eliminated {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .qualification-icon {
+            font-size: var(--font-size-4xl);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .qualification-text {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .qualification-subtext {
+            color: var(--color-text-secondary);
+        }
+
+        .results-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        /* LEADERBOARD SCREEN */
+        .leaderboard-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            background: var(--color-glass-bg);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+        }
+
+        .leaderboard-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+        }
+
+        .leaderboard-tab.active {
+            background: var(--color-accent-gold);
+            color: var(--color-dark-primary);
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .leaderboard-item {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            transition: all var(--transition-normal);
+        }
+
+        .leaderboard-item:hover {
+            border-color: var(--color-accent-gold);
+            transform: translateX(4px);
+        }
+
+        .leaderboard-item.current-user {
+            border-color: var(--color-accent-gold);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-glass-bg);
+            border: 2px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-item:nth-child(1) .leaderboard-rank {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: var(--color-dark-primary);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .leaderboard-item:nth-child(2) .leaderboard-rank {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            color: var(--color-dark-primary);
+            border-color: #c0c0c0;
+        }
+
+        .leaderboard-item:nth-child(3) .leaderboard-rank {
+            background: linear-gradient(135deg, #cd7f32, #e89a5d);
+            color: white;
+            border-color: #cd7f32;
+        }
+
+        .leaderboard-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-dark-primary);
+            flex-shrink: 0;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .leaderboard-name {
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .leaderboard-stats {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .leaderboard-score {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            flex-shrink: 0;
+        }
+
+        /* SHOP SCREEN */
+        .shop-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .shop-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .shop-subtitle {
+            color: var(--color-text-secondary);
+        }
+
+        .passes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .pass-card {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+        }
+
+        .pass-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-accent-gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .pass-card.featured {
+            border-color: var(--color-accent-gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .pass-badge {
+            position: absolute;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            background: var(--color-accent-gold);
+            color: var(--color-dark-primary);
+            padding: 4px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+        }
+
+        .pass-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-3xl);
+        }
+
+        .pass-name {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .pass-description {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-lg);
+            min-height: 60px;
+        }
+
+        .pass-price {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .pass-features {
+            text-align: left;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .pass-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .pass-feature::before {
+            content: 'â';
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        .buyback-section {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--color-accent-gold);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .buyback-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-accent-gold);
+        }
+
+        .buyback-description {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .buyback-price {
+            font-size: var(--font-size-4xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* PROFILE SCREEN */
+        .profile-header {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto var(--spacing-lg);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            color: var(--color-dark-primary);
+        }
+
+        .profile-name {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-join-date {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .achievements-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .achievement-card {
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-accent-gold);
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--color-accent-gold);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.4;
+        }
+
+        .achievement-icon {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .achievement-name {
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .history-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .history-item {
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .history-theme {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .history-details {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .history-score {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-accent-gold);
+        }
+
+        /* DRAW SCREEN */
+        .draw-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .draw-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .draw-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .draw-date {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        .draw-animation {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--color-accent-gold);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .draw-animation-icon {
+            font-size: 100px;
+            margin-bottom: var(--spacing-lg);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .draw-winner {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--color-accent-gold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .draw-prize {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+        }
+
+        .qualified-players {
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .qualified-players-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .qualified-players-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .qualified-player {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--color-glass-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+        }
+
+        .qualified-player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-dark-primary);
+            font-size: var(--font-size-xs);
+            flex-shrink: 0;
+        }
+
+        .qualified-player-name {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-2xl);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--color-border);
+            border-top-color: var(--color-accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .loading-text {
+            color: var(--color-text-secondary);
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .empty-state-icon {
+            font-size: var(--font-size-4xl);
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-state-description {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: var(--spacing-lg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--color-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            pointer-events: all;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-color: var(--color-success);
+        }
+
+        .toast.error {
+            border-color: var(--color-error);
+        }
+
+        .toast.warning {
+            border-color: var(--color-warning);
+        }
+
+        .toast.info {
+            border-color: var(--color-info);
+        }
+
+        .toast-icon {
+            font-size: var(--font-size-2xl);
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: var(--font-size-xl);
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mt-sm { margin-top: var(--spacing-sm); }
+        .mt-md { margin-top: var(--spacing-md); }
+        .mt-lg { margin-top: var(--spacing-lg); }
+        .mt-xl { margin-top: var(--spacing-xl); }
+
+        .mb-sm { margin-bottom: var(--spacing-sm); }
+        .mb-md { margin-bottom: var(--spacing-md); }
+        .mb-lg { margin-bottom: var(--spacing-lg); }
+        .mb-xl { margin-bottom: var(--spacing-xl); }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-wrap { flex-wrap: wrap; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-sm { gap: var(--spacing-sm); }
+        .gap-md { gap: var(--spacing-md); }
+        .gap-lg { gap: var(--spacing-lg); }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .header-nav {
+                display: flex;
+            }
+
+            .hamburger {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: none;
+            }
+
+            .content {
+                padding: var(--spacing-xl);
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .question-text {
+                font-size: var(--font-size-2xl);
+            }
+
+            .answers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .results-breakdown {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            :root {
+                --font-size-3xl: 1.75rem;
+                --font-size-4xl: 2rem;
+            }
+
+            .content {
+                padding: var(--spacing-md);
+            }
+
+            .card {
+                padding: var(--spacing-md);
+            }
+
+            .auth-card {
+                padding: var(--spacing-lg);
+            }
+
+            .quiz-question-container {
+                padding: var(--spacing-lg);
+            }
+
+            .question-text {
+                padding-right: 0;
+                margin-bottom: var(--spacing-lg);
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: var(--spacing-lg);
+            }
+
+            .results-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .toast-container {
+                left: var(--spacing-md);
+                right: var(--spacing-md);
+            }
+
+            .toast {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .passes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .leaderboard-tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .app-header,
+            .hamburger,
+            .mobile-menu,
+            .btn,
+            .toast-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-logo">
+                    <div class="modal-logo-icon">Q</div>
+                </div>
+                <h1 class="modal-title">Bienvenue sur Quiz du Jour!</h1>
+                <p class="modal-subtitle">Version DÃ©mo</p>
+                <form id="loginForm" onsubmit="handleDemoLogin(); return false;">
+                    <div class="form-group">
+                        <label class="form-label" for="loginUsername">Pseudo</label>
+                        <input 
+                            type="text" 
+                            id="loginUsername" 
+                            class="form-input" 
+                            placeholder="Entrez votre pseudo"
+                            required
+                            minlength="3"
+                            maxlength="20"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Commencer</button>
+                    <p class="modal-note">ð¾ Aucun compte requis - vos donnÃ©es sont sauvegardÃ©es localement</p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="#" class="logo" onclick="showScreen('home'); return false;">
+                    <div class="logo-icon">Q</div>
+                    <span>Quiz du Jour</span>
+                </a>
+                
+                <div class="header-nav">
+                    <button class="btn btn-ghost" onclick="showScreen('home')">ð  Accueil</button>
+                    <button class="btn btn-ghost" onclick="showScreen('leaderboard')">ð Classement</button>
+                    <button class="btn btn-ghost" onclick="showScreen('shop')">ð Boutique</button>
+                    <button class="btn btn-ghost" onclick="showScreen('profile')">ð¤ Profil</button>
+                </div>
+
+                <div class="header-actions">
+                    <span class="demo-badge">MODE DÃMO</span>
+                    <div class="user-info" id="userInfo" style="display: none;">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div>
+                            <div class="user-name" id="userName">User</div>
+                            <div class="user-score" id="userScore">â­ 0</div>
+                        </div>
+                    </div>
+                    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <nav>
+                <button class="btn btn-ghost" style="width: 100%; justify-content: flex-start;" onclick="showScreen('home'); toggleMobileMenu();">ð  Accueil</button>
+                <button class="btn btn-ghost" style="width: 100%; justify-content: flex-start;" onclick="showScreen('leaderboard'); toggleMobileMenu();">ð Classement</button>
+                <button class="btn btn-ghost" style="width: 100%; justify-content: flex-start;" onclick="showScreen('shop'); toggleMobileMenu();">ð Boutique</button>
+                <button class="btn btn-ghost" style="width: 100%; justify-content: flex-start;" onclick="showScreen('profile'); toggleMobileMenu();">ð¤ Profil</button>
+            </nav>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div id="homeScreen" class="screen">
+            <div class="content">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Bienvenue sur Quiz du Jour</h1>
+                    <p class="dashboard-subtitle">Testez vos connaissances quotidiennement</p>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotalScore">0</div>
+                        <div class="stat-label">Points Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">SÃ©rie</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCompleted">0</div>
+                        <div class="stat-label">ComplÃ©tÃ©s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statQualified">0</div>
+                        <div class="stat-label">QualifiÃ©s</div>
+                    </div>
+                </div>
+
+                <div class="week-section">
+                    <h2 class="section-title">ð Semaine en cours</h2>
+                    <div class="days-grid" id="currentWeekGrid">
+                        <!-- Days will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="week-section">
+                    <h2 class="section-title">ð Semaines prÃ©cÃ©dentes</h2>
+                    <div id="previousWeeksContainer">
+                        <!-- Previous weeks will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quizScreen" class="screen">
+            <div class="content">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <div class="quiz-theme" id="quizTheme">ThÃ¨me du Quiz</div>
+                        <div class="quiz-meta">
+                            <div class="quiz-progress">
+                                <span>Question <span id="currentQuestionNumber">1</span>/<span id="totalQuestions">10</span></span>
+                            </div>
+                            <div class="quiz-score">
+                                â­ <span id="quizCurrentScore">0</span> points
+                            </div>
+                            <div class="difficulty-badge" id="quizDifficulty">Facile</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="quizProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question-container">
+                        <div class="timer-container">
+                            <svg class="timer-circle" viewBox="0 0 80 80">
+                                <circle class="timer-circle-bg" cx="40" cy="40" r="36"></circle>
+                                <circle class="timer-circle-progress" id="timerCircle" cx="40" cy="40" r="36"></circle>
+                            </svg>
+                            <div class="timer-text" id="timerText">30</div>
+                        </div>
+                        
+                        <div class="question-number" id="questionNumberLabel">Question 1</div>
+                        <div class="question-text" id="questionText">Quelle est la capitale de la France?</div>
+                        
+                        <div class="answers-grid" id="answersGrid">
+                            <!-- Answers will be populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary" onclick="quitQuiz()">Quitter</button>
+                        <button class="btn btn-primary" id="nextButton" onclick="nextQuestion()" disabled>Question Suivante</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="resultsScreen" class="screen">
+            <div class="content">
+                <div class="results-container">
+                    <div class="results-header">
+                        <div class="results-icon" id="resultsIcon">ð</div>
+                        <h1 class="results-title" id="resultsTitle">Quiz TerminÃ©!</h1>
+                        <p class="results-subtitle" id="resultsSubtitle">Excellent travail!</p>
+                    </div>
+
+                    <div class="results-score-big">
+                        <div class="results-score-value" id="resultsFinalScore">0</div>
+                        <div class="results-score-label">Points gagnÃ©s</div>
+                    </div>
+
+                    <div class="results-breakdown">
+                        <div class="breakdown-item">
+                            <div class="breakdown-value success" id="resultsCorrect">0</div>
+                            <div class="breakdown-label">Correctes</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-value error" id="resultsIncorrect">0</div>
+                            <div class="breakdown-label">Incorrectes</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-value warning" id="resultsSkipped">0</div>
+                            <div class="breakdown-label">PassÃ©es</div>
+                        </div>
+                    </div>
+
+                    <div class="qualification-status" id="qualificationStatus">
+                        <div class="qualification-icon" id="qualificationIcon">â</div>
+                        <div class="qualification-text" id="qualificationText">QualifiÃ© pour le tirage!</div>
+                        <p class="qualification-subtext" id="qualificationSubtext">Vous avez obtenu un score suffisant</p>
+                    </div>
+
+                    <div class="results-actions">
+                        <button class="btn btn-primary btn-lg" onclick="showScreen('home')">Retour Ã  l'accueil</button>
+                        <button class="btn btn-secondary" onclick="showScreen('leaderboard')">Voir le classement</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD SCREEN -->
+        <div id="leaderboardScreen" class="screen">
+            <div class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-title">ð Classement</h1>
+                        <p class="card-subtitle">Les meilleurs joueurs</p>
+                    </div>
+
+                    <div class="leaderboard-tabs">
+                        <button class="leaderboard-tab active" onclick="switchLeaderboardTab('week')" data-tab="week">Cette semaine</button>
+                        <button class="leaderboard-tab" onclick="switchLeaderboardTab('month')" data-tab="month">Ce mois</button>
+                        <button class="leaderboard-tab" onclick="switchLeaderboardTab('alltime')" data-tab="alltime">Tout le temps</button>
+                    </div>
+
+                    <div class="leaderboard-list" id="leaderboardList">
+                        <!-- Leaderboard items will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP SCREEN -->
+        <div id="shopScreen" class="screen">
+            <div class="content">
+                <div class="shop-header">
+                    <h1 class="shop-title">ð Boutique</h1>
+                    <p class="shop-subtitle">AmÃ©liorez votre expÃ©rience de jeu</p>
+                </div>
+
+                <div class="passes-grid">
+                    <div class="pass-card">
+                        <div class="pass-icon">ð¯</div>
+                        <h3 class="pass-name">Pass Hebdo</h3>
+                        <p class="pass-description">Multipliez vos gains pour une semaine</p>
+                        <div class="pass-price">2,99â¬</div>
+                        <div class="pass-features">
+                            <div class="pass-feature">Points x1.5 pendant 7 jours</div>
+                            <div class="pass-feature">AccÃ¨s prioritaire aux quiz</div>
+                            <div class="pass-feature">Badge exclusif</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showToast('info', 'DÃ©mo', 'Paiement dÃ©sactivÃ© en mode dÃ©mo')">Acheter</button>
+                    </div>
+
+                    <div class="pass-card featured">
+                        <div class="pass-badge">POPULAIRE</div>
+                        <div class="pass-icon">ð</div>
+                        <h3 class="pass-name">Pass Mensuel</h3>
+                        <p class="pass-description">La meilleure valeur pour les joueurs rÃ©guliers</p>
+                        <div class="pass-price">9,99â¬</div>
+                        <div class="pass-features">
+                            <div class="pass-feature">Points x2 pendant 30 jours</div>
+                            <div class="pass-feature">AccÃ¨s anticipÃ© aux nouveaux quiz</div>
+                            <div class="pass-feature">Statistiques avancÃ©es</div>
+                            <div class="pass-feature">Badge premium dorÃ©</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showToast('info', 'DÃ©mo', 'Paiement dÃ©sactivÃ© en mode dÃ©mo')">Acheter</button>
+                    </div>
+
+                    <div class="pass-card">
+                        <div class="pass-icon">ð</div>
+                        <h3 class="pass-name">Pass VIP</h3>
+                        <p class="pass-description">L'expÃ©rience ultime pour les champions</p>
+                        <div class="pass-price">29,99â¬</div>
+                        <div class="pass-features">
+                            <div class="pass-feature">Points x3 sans limite de temps</div>
+                            <div class="pass-feature">CrÃ©ation de quiz personnalisÃ©s</div>
+                            <div class="pass-feature">Tableaux de bord analytiques</div>
+                            <div class="pass-feature">Badge VIP exclusif</div>
+                            <div class="pass-feature">Support prioritaire</div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showToast('info', 'DÃ©mo', 'Paiement dÃ©sactivÃ© en mode dÃ©mo')">Acheter</button>
+                    </div>
+                </div>
+
+                <div class="buyback-section">
+                    <h2 class="buyback-title">ð° Option de Rachat</h2>
+                    <p class="buyback-description">ÃliminÃ© d'un quiz? Rachetez votre place dans le tirage!</p>
+                    <div class="buyback-price">1,99â¬</div>
+                    <button class="btn btn-primary btn-lg" onclick="showToast('info', 'DÃ©mo', 'Paiement dÃ©sactivÃ© en mode dÃ©mo')">Racheter ma place</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE SCREEN -->
+        <div id="profileScreen" class="screen">
+            <div class="content">
+                <div class="profile-header">
+                    <div class="profile-avatar-large" id="profileAvatar">U</div>
+                    <h1 class="profile-name" id="profileName">Username</h1>
+                    <p class="profile-join-date" id="profileJoinDate">Membre depuis le 1er janvier 2025</p>
+                </div>
+
+                <div class="profile-stats-grid" id="profileStatsGrid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileTotalScore">0</div>
+                        <div class="stat-label">Points Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileQuizzesCompleted">0</div>
+                        <div class="stat-label">Quiz ComplÃ©tÃ©s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileStreak">0</div>
+                        <div class="stat-label">SÃ©rie Actuelle</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profileAccuracy">0%</div>
+                        <div class="stat-label">PrÃ©cision</div>
+                    </div>
+                </div>
+
+                <div class="achievements-section">
+                    <h2 class="section-title">ð SuccÃ¨s</h2>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Achievements will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <h2 class="section-title">ð Historique</h2>
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DRAW SCREEN -->
+        <div id="drawScreen" class="screen">
+            <div class="content">
+                <div class="draw-container">
+                    <div class="draw-header">
+                        <h1 class="draw-title">ð Tirage au Sort</h1>
+                        <p class="draw-date" id="drawDate">Dimanche 5 janvier 2025</p>
+                    </div>
+
+                    <div class="draw-animation" id="drawAnimation">
+                        <div class="draw-animation-icon">ð°</div>
+                        <p style="color: var(--color-text-secondary);">Tirage en cours...</p>
+                    </div>
+
+                    <div id="drawResult" class="hidden">
+                        <div class="draw-animation">
+                            <div style="font-size: 80px; margin-bottom: var(--spacing-lg);">ð</div>
+                            <div class="draw-winner" id="drawWinnerName">John Doe</div>
+                            <p class="draw-prize" id="drawPrize">a gagnÃ© 100â¬!</p>
+                        </div>
+                    </div>
+
+                    <div class="qualified-players">
+                        <h3 class="qualified-players-title">Joueurs qualifiÃ©s</h3>
+                        <div class="qualified-players-list" id="qualifiedPlayersList">
+                            <!-- Qualified players will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+<script>
+(function(){'use strict';const GAME_CONFIG={questionsPerQuiz:10,timerSeconds:30,qualificationThresholds:[40,50,60,70,80,80,90],pointsCorrect:[10,20,30],pointsWrong:[-5,-10,-15],bonusTimePoints:5,passPrices:[2,4,5,5,5,5,5],buybackPrice:40};const THEMES=[{key:'culture_generale',name:'Culture GÃ©nÃ©rale',icon:'ð§ ',day:1},{key:'sport',name:'Sport',icon:'â½',day:2},{key:'cinema_series',name:'CinÃ©ma & SÃ©ries',icon:'ð¬',day:3},{key:'histoire_geo',name:'Histoire & GÃ©o',icon:'ð',day:4},{key:'sciences_tech',name:'Sciences & Tech',icon:'ð¬',day:5},{key:'musique',name:'Musique',icon:'ðµ',day:6},{key:'surprise',name:'ThÃ¨me Surprise',icon:'ð²',day:0}];const QUESTION_BANK=[{id:1,theme:'culture_generale',question_text:'Quelle est la capitale de la France ?',option_a:'Paris',option_b:'Lyon',option_c:'Marseille',option_d:'Bordeaux',correct_answer:0,difficulty:1},{id:2,theme:'culture_generale',question_text:'Qui a peint la Joconde ?',option_a:'Pablo Picasso',option_b:'Leonardo da Vinci',option_c:'Vincent van Gogh',option_d:'Claude Monet',correct_answer:1,difficulty:2},{id:3,theme:'culture_generale',question_text:'En quelle annÃ©e a eu lieu la RÃ©volution franÃ§aise ?',option_a:'1789',option_b:'1799',option_c:'1804',option_d:'1815',correct_answer:0,difficulty:2},{id:4,theme:'culture_generale',question_text:'Quel est le plus long fleuve de France ?',option_a:'La Seine',option_b:'Le RhÃ´ne',option_c:'La Garonne',option_d:'La Loire',correct_answer:3,difficulty:2},{id:5,theme:'culture_generale',question_text:'Combien de rÃ©gions compte la France mÃ©tropolitaine ?',option_a:'12',option_b:'13',option_c:'14',option_d:'15',correct_answer:1,difficulty:3},{id:6,theme:'culture_generale',question_text:'Quel Ã©crivain franÃ§ais a Ã©crit "Les MisÃ©rables" ?',option_a:'Ãmile Zola',option_b:'Victor Hugo',option_c:'Alexandre Dumas',option_d:'Gustave Flaubert',correct_answer:1,difficulty:1},{id:7,theme:'culture_generale',question_text:'Quelle est la devise de la France ?',option_a:'LibertÃ©, ÃgalitÃ©, FraternitÃ©',option_b:'Force et Honneur',option_c:'UnitÃ© et ProgrÃ¨s',option_d:'Paix et Justice',correct_answer:0,difficulty:1},{id:8,theme:'culture_generale',question_text:'Qui Ã©tait le roi Soleil ?',option_a:'Louis XIII',option_b:'Louis XIV',option_c:'Louis XV',option_d:'Louis XVI',correct_answer:1,difficulty:2},{id:9,theme:'culture_generale',question_text:'Quel monument parisien mesure 324 mÃ¨tres de haut ?',option_a:'Tour Montparnasse',option_b:'Arc de Triomphe',option_c:'Tour Eiffel',option_d:'SacrÃ©-CÅur',correct_answer:2,difficulty:1},{id:10,theme:'culture_generale',question_text:'Quel philosophe a Ã©crit "Je pense, donc je suis" ?',option_a:'RenÃ© Descartes',option_b:'Jean-Jacques Rousseau',option_c:'Voltaire',option_d:'Blaise Pascal',correct_answer:0,difficulty:3},{id:11,theme:'sport',question_text:'Combien de joueurs composent une Ã©quipe de football ?',option_a:'9',option_b:'10',option_c:'11',option_d:'12',correct_answer:2,difficulty:1},{id:12,theme:'sport',question_text:'Quel pays a remportÃ© la Coupe du Monde de football 2018 ?',option_a:'BrÃ©sil',option_b:'Allemagne',option_c:'France',option_d:'Argentine',correct_answer:2,difficulty:1},{id:13,theme:'sport',question_text:'Combien de Grand Chelem existe-t-il en tennis ?',option_a:'3',option_b:'4',option_c:'5',option_d:'6',correct_answer:1,difficulty:2},{id:14,theme:'sport',question_text:'Quelle distance reprÃ©sente un marathon ?',option_a:'40,195 km',option_b:'42,195 km',option_c:'44,195 km',option_d:'45,195 km',correct_answer:1,difficulty:2},{id:15,theme:'sport',question_text:'Quel joueur de football franÃ§ais a remportÃ© le Ballon d\'Or en 1998 ?',option_a:'Zinedine Zidane',option_b:'Thierry Henry',option_c:'Michel Platini',option_d:'Just Fontaine',correct_answer:0,difficulty:2},{id:16,theme:'sport',question_text:'Dans quel sport utilise-t-on un puck ?',option_a:'Basketball',option_b:'Hockey sur glace',option_c:'Baseball',option_d:'Rugby',correct_answer:1,difficulty:2},{id:17,theme:'sport',question_text:'Combien de sets faut-il gagner pour remporter un match de tennis masculin en Grand Chelem ?',option_a:'2',option_b:'3',option_c:'4',option_d:'5',correct_answer:1,difficulty:3},{id:18,theme:'sport',question_text:'Quel cycliste franÃ§ais a remportÃ© 5 Tours de France ?',option_a:'Laurent Fignon',option_b:'Bernard Hinault',option_c:'Jacques Anquetil',option_d:'Raymond Poulidor',correct_answer:1,difficulty:3},{id:19,theme:'sport',question_text:'Aux Jeux Olympiques, quelle couleur de mÃ©daille n\'existe pas ?',option_a:'Or',option_b:'Argent',option_c:'Bronze',option_d:'Platine',correct_answer:3,difficulty:1},{id:20,theme:'sport',question_text:'Quel sport pratique Teddy Riner ?',option_a:'Boxe',option_b:'Judo',option_c:'KaratÃ©',option_d:'Taekwondo',correct_answer:1,difficulty:1},{id:21,theme:'cinema_series',question_text:'Qui a rÃ©alisÃ© le film "Titanic" ?',option_a:'Steven Spielberg',option_b:'James Cameron',option_c:'Christopher Nolan',option_d:'Ridley Scott',correct_answer:1,difficulty:2},{id:22,theme:'cinema_series',question_text:'Quel acteur joue Iron Man dans l\'univers Marvel ?',option_a:'Chris Evans',option_b:'Chris Hemsworth',option_c:'Robert Downey Jr.',option_d:'Mark Ruffalo',correct_answer:2,difficulty:1},{id:23,theme:'cinema_series',question_text:'Combien d\'Ã©pisodes compte une saison typique de "Game of Thrones" ?',option_a:'8',option_b:'10',option_c:'12',option_d:'Varie selon les saisons',correct_answer:3,difficulty:3},{id:24,theme:'cinema_series',question_text:'Quel film a remportÃ© l\'Oscar du meilleur film en 2020 ?',option_a:'1917',option_b:'Joker',option_c:'Parasite',option_d:'Once Upon a Time in Hollywood',correct_answer:2,difficulty:3},{id:25,theme:'cinema_series',question_text:'Dans "Harry Potter", quel est le prÃ©nom du professeur Dumbledore ?',option_a:'Albus',option_b:'Severus',option_c:'Rubeus',option_d:'Remus',correct_answer:0,difficulty:2},{id:26,theme:'cinema_series',question_text:'Quelle sÃ©rie Netflix met en scÃ¨ne un braquage Ã  la Fabrique nationale de monnaie et timbre ?',option_a:'Narcos',option_b:'La Casa de Papel',option_c:'Lupin',option_d:'Peaky Blinders',correct_answer:1,difficulty:1},{id:27,theme:'cinema_series',question_text:'Qui a composÃ© la musique du film "Inception" ?',option_a:'John Williams',option_b:'Hans Zimmer',option_c:'Ennio Morricone',option_d:'Alexandre Desplat',correct_answer:1,difficulty:3},{id:28,theme:'cinema_series',question_text:'Quel acteur franÃ§ais a jouÃ© dans "Intouchables" ?',option_a:'Gad Elmaleh',option_b:'Jamel Debbouze',option_c:'Omar Sy',option_d:'Dany Boon',correct_answer:2,difficulty:1},{id:29,theme:'cinema_series',question_text:'Dans quelle saga trouve-t-on les personnages Frodo et Gandalf ?',option_a:'Game of Thrones',option_b:'Le Seigneur des Anneaux',option_c:'Narnia',option_d:'Harry Potter',correct_answer:1,difficulty:1},{id:30,theme:'cinema_series',question_text:'Quel rÃ©alisateur franÃ§ais a crÃ©Ã© "AmÃ©lie Poulain" ?',option_a:'Luc Besson',option_b:'Jean-Pierre Jeunet',option_c:'FranÃ§ois Ozon',option_d:'Olivier Nakache',correct_answer:1,difficulty:2},{id:31,theme:'histoire_geo',question_text:'En quelle annÃ©e l\'homme a-t-il marchÃ© sur la Lune pour la premiÃ¨re fois ?',option_a:'1967',option_b:'1969',option_c:'1971',option_d:'1973',correct_answer:1,difficulty:2},{id:32,theme:'histoire_geo',question_text:'Quel est le plus grand ocÃ©an du monde ?',option_a:'OcÃ©an Atlantique',option_b:'OcÃ©an Indien',option_c:'OcÃ©an Pacifique',option_d:'OcÃ©an Arctique',correct_answer:2,difficulty:1},{id:33,theme:'histoire_geo',question_text:'Quelle civilisation a construit le Machu Picchu ?',option_a:'Les AztÃ¨ques',option_b:'Les Mayas',option_c:'Les Incas',option_d:'Les OlmÃ¨ques',correct_answer:2,difficulty:2},{id:34,theme:'histoire_geo',question_text:'Combien de pays bordent la France ?',option_a:'6',option_b:'7',option_c:'8',option_d:'9',correct_answer:2,difficulty:3},{id:35,theme:'histoire_geo',question_text:'Qui Ã©tait le premier empereur de Rome ?',option_a:'Jules CÃ©sar',option_b:'Auguste',option_c:'NÃ©ron',option_d:'Caligula',correct_answer:1,difficulty:3},{id:36,theme:'histoire_geo',question_text:'Quelle est la capitale de l\'Australie ?',option_a:'Sydney',option_b:'Melbourne',option_c:'Canberra',option_d:'Brisbane',correct_answer:2,difficulty:3},{id:37,theme:'histoire_geo',question_text:'En quelle annÃ©e le mur de Berlin est-il tombÃ© ?',option_a:'1987',option_b:'1989',option_c:'1991',option_d:'1993',correct_answer:1,difficulty:2},{id:38,theme:'histoire_geo',question_text:'Quel fleuve traverse l\'Ãgypte ?',option_a:'Le Tigre',option_b:'L\'Euphrate',option_c:'Le Nil',option_d:'Le Jourdain',correct_answer:2,difficulty:1},{id:39,theme:'histoire_geo',question_text:'Combien de continents existe-t-il ?',option_a:'5',option_b:'6',option_c:'7',option_d:'8',correct_answer:2,difficulty:1},{id:40,theme:'histoire_geo',question_text:'Quelle bataille a marquÃ© la fin de l\'Empire napolÃ©onien ?',option_a:'Austerlitz',option_b:'Waterloo',option_c:'IÃ©na',option_d:'Leipzig',correct_answer:1,difficulty:2},{id:41,theme:'sciences_tech',question_text:'Quelle est la formule chimique de l\'eau ?',option_a:'H2O',option_b:'CO2',option_c:'O2',option_d:'H2O2',correct_answer:0,difficulty:1},{id:42,theme:'sciences_tech',question_text:'Qui a inventÃ© l\'ampoule Ã©lectrique ?',option_a:'Nikola Tesla',option_b:'Thomas Edison',option_c:'Alexander Graham Bell',option_d:'Benjamin Franklin',correct_answer:1,difficulty:2},{id:43,theme:'sciences_tech',question_text:'Quelle planÃ¨te est la plus proche du Soleil ?',option_a:'VÃ©nus',option_b:'Mercure',option_c:'Mars',option_d:'Terre',correct_answer:1,difficulty:2},{id:44,theme:'sciences_tech',question_text:'Combien de chromosomes possÃ¨de un Ãªtre humain ?',option_a:'23',option_b:'42',option_c:'46',option_d:'48',correct_answer:2,difficulty:3},{id:45,theme:'sciences_tech',question_text:'Quelle est la vitesse de la lumiÃ¨re (arrondie) ?',option_a:'100 000 km/s',option_b:'200 000 km/s',option_c:'300 000 km/s',option_d:'400 000 km/s',correct_answer:2,difficulty:3},{id:46,theme:'sciences_tech',question_text:'Quel scientifique a dÃ©veloppÃ© la thÃ©orie de la relativitÃ© ?',option_a:'Isaac Newton',option_b:'Albert Einstein',option_c:'GalilÃ©e',option_d:'Stephen Hawking',correct_answer:1,difficulty:1},{id:47,theme:'sciences_tech',question_text:'Combien de cÃ´tÃ©s a un hexagone ?',option_a:'5',option_b:'6',option_c:'7',option_d:'8',correct_answer:1,difficulty:1},{id:48,theme:'sciences_tech',question_text:'Quel est le symbole chimique de l\'or ?',option_a:'Or',option_b:'Au',option_c:'Ag',option_d:'Go',correct_answer:1,difficulty:2},{id:49,theme:'sciences_tech',question_text:'Quelle est l\'unitÃ© de mesure de la force ?',option_a:'Joule',option_b:'Watt',option_c:'Newton',option_d:'Pascal',correct_answer:2,difficulty:3},{id:50,theme:'sciences_tech',question_text:'Combien de planÃ¨tes composent notre systÃ¨me solaire ?',option_a:'7',option_b:'8',option_c:'9',option_d:'10',correct_answer:1,difficulty:2},{id:51,theme:'musique',question_text:'Qui a chantÃ© "La Vie en Rose" ?',option_a:'Ãdith Piaf',option_b:'Dalida',option_c:'Barbara',option_d:'Juliette GrÃ©co',correct_answer:0,difficulty:1},{id:52,theme:'musique',question_text:'Quel groupe britannique a chantÃ© "Bohemian Rhapsody" ?',option_a:'The Beatles',option_b:'Queen',option_c:'The Rolling Stones',option_d:'Led Zeppelin',correct_answer:1,difficulty:1},{id:53,theme:'musique',question_text:'Combien de cordes possÃ¨de une guitare classique ?',option_a:'4',option_b:'5',option_c:'6',option_d:'7',correct_answer:2,difficulty:1},{id:54,theme:'musique',question_text:'Quel chanteur franÃ§ais est surnommÃ© "le Grand Jacques" ?',option_a:'Jacques Dutronc',option_b:'Jacques Higelin',option_c:'Jacques Brel',option_d:'Jacques PrÃ©vert',correct_answer:2,difficulty:2},{id:55,theme:'musique',question_text:'Dans quel pays est nÃ© le reggae ?',option_a:'Cuba',option_b:'HaÃ¯ti',option_c:'JamaÃ¯que',option_d:'Trinidad',correct_answer:2,difficulty:2},{id:56,theme:'musique',question_text:'Qui a composÃ© "Les Quatre Saisons" ?',option_a:'Mozart',option_b:'Beethoven',option_c:'Vivaldi',option_d:'Bach',correct_answer:2,difficulty:3},{id:57,theme:'musique',question_text:'Quel rappeur franÃ§ais a sorti l\'album "Cyborg" ?',option_a:'Booba',option_b:'Nekfeu',option_c:'PNL',option_d:'Orelsan',correct_answer:1,difficulty:3},{id:58,theme:'musique',question_text:'Combien de touches blanches a un piano ?',option_a:'36',option_b:'48',option_c:'52',option_d:'88',correct_answer:2,difficulty:3},{id:59,theme:'musique',question_text:'Quel festival de musique se dÃ©roule chaque Ã©tÃ© en Bretagne ?',option_a:'Les Vieilles Charrues',option_b:'Rock en Seine',option_c:'Les Francofolies',option_d:'Hellfest',correct_answer:0,difficulty:2},{id:60,theme:'musique',question_text:'Qui a chantÃ© "Freed from Desire" ?',option_a:'AlizÃ©e',option_b:'Gala',option_c:'MylÃ¨ne Farmer',option_d:'Lorie',correct_answer:1,difficulty:2},{id:61,theme:'surprise',question_text:'Quel animal est le symbole de la sagesse ?',option_a:'Le renard',option_b:'Le hibou',option_c:'Le lion',option_d:'L\'Ã©lÃ©phant',correct_answer:1,difficulty:2},{id:62,theme:'surprise',question_text:'Combien de jours compte une annÃ©e bissextile ?',option_a:'364',option_b:'365',option_c:'366',option_d:'367',correct_answer:2,difficulty:1},{id:63,theme:'surprise',question_text:'Quel est l\'ingrÃ©dient principal de la guacamole ?',option_a:'Tomate',option_b:'Avocat',option_c:'Poivron',option_d:'Concombre',correct_answer:1,difficulty:1},{id:64,theme:'surprise',question_text:'Quelle est la langue la plus parlÃ©e dans le monde ?',option_a:'Anglais',option_b:'Espagnol',option_c:'Mandarin',option_d:'Hindi',correct_answer:2,difficulty:2},{id:65,theme:'surprise',question_text:'Combien de minutes y a-t-il dans une semaine ?',option_a:'10 080',option_b:'10 440',option_c:'10 800',option_d:'11 520',correct_answer:0,difficulty:3},{id:66,theme:'surprise',question_text:'Quelle couleur obtient-on en mÃ©langeant du bleu et du jaune ?',option_a:'Orange',option_b:'Vert',option_c:'Violet',option_d:'Marron',correct_answer:1,difficulty:1},{id:67,theme:'surprise',question_text:'Quel est le plus petit pays du monde ?',option_a:'Monaco',option_b:'Vatican',option_c:'Saint-Marin',option_d:'Liechtenstein',correct_answer:1,difficulty:3},{id:68,theme:'surprise',question_text:'Combien y a-t-il de signes du zodiaque ?',option_a:'10',option_b:'11',option_c:'12',option_d:'13',correct_answer:2,difficulty:1},{id:69,theme:'surprise',question_text:'Quelle fÃªte cÃ©lÃ¨bre-t-on le 14 juillet en France ?',option_a:'Armistice',option_b:'Victoire 1945',option_c:'FÃªte Nationale',option_d:'LibÃ©ration',correct_answer:2,difficulty:1},{id:70,theme:'surprise',question_text:'Combien de pattes a une araignÃ©e ?',option_a:'6',option_b:'8',option_c:'10',option_d:'12',correct_answer:1,difficulty:1}];const FAKE_PLAYERS=[{pseudo:'QuizMaster',total_score:2450},{pseudo:'CÃ©lineG',total_score:2380},{pseudo:'ThomasD',total_score:2150},{pseudo:'MarieL',total_score:1980},{pseudo:'AlexP',total_score:1850},{pseudo:'SophieM',total_score:1720},{pseudo:'JulienR',total_score:1690},{pseudo:'LauraB',total_score:1540},{pseudo:'PierreV',total_score:1420},{pseudo:'CamilleF',total_score:1290}];let currentUser=null;let currentQuiz={dayNumber:null,questions:[],currentQuestionIndex:0,answers:[],startTime:null,timer:null,score:0};let weekData=null;let playerProfile=null;function getLocalStorage(key,defaultValue=null){try{const item=localStorage.getItem(key);return item?JSON.parse(item):defaultValue;}catch(e){return defaultValue;}}function setLocalStorage(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(e){console.error('Storage error:',e);}}function getCurrentWeekYear(){const date=new Date();const onejan=new Date(date.getFullYear(),0,1);const millisecsInDay=86400000;const dayOfYear=Math.ceil((date-onejan)/millisecsInDay);const weekNum=Math.ceil((dayOfYear+onejan.getDay()+1)/7);return`${date.getFullYear()}-W${String(weekNum).padStart(2,'0')}`;}function calculateCurrentDay(){const day=new Date().getDay();return day===0?0:day;}function formatDate(dateString){const date=new Date(dateString);return date.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});}function formatScore(score){return score>=0?`+${score}`:`${score}`;}function showToast(message,type='info'){const toast=document.createElement('div');toast.className=`toast toast-${type}`;toast.textContent=message;document.body.appendChild(toast);setTimeout(()=>toast.classList.add('show'),10);setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.remove(),300);},3000);}function showLoading(){const overlay=document.getElementById('loading-overlay');if(overlay)overlay.classList.add('active');}function hideLoading(){const overlay=document.getElementById('loading-overlay');if(overlay)overlay.classList.remove('active');}function handleError(error,userMessage='Une erreur est survenue'){console.error('Error:',error);showToast(userMessage,'error');hideLoading();}function showAuthModal(){const modal=document.createElement('div');modal.id='auth-modal';modal.className='modal-overlay';modal.innerHTML=`<div class="modal-content"><h2>Bienvenue sur Quiz du Jour</h2><p>Entrez votre pseudo pour commencer</p><input type="text" id="username-input" placeholder="Votre pseudo" maxlength="20"><button class="btn btn-primary" onclick="app.submitUsername()">Commencer</button></div>`;document.body.appendChild(modal);setTimeout(()=>modal.classList.add('active'),10);document.getElementById('username-input').focus();}function submitUsername(){const input=document.getElementById('username-input');const username=input.value.trim();if(!username||username.length<3){showToast('Le pseudo doit contenir au moins 3 caractÃ¨res','error');return;}const userId='user_'+Date.now();currentUser={id:userId,username:username};playerProfile={id:userId,pseudo:username,email:'demo@quizdujour.fr',total_score:0,created_at:new Date().toISOString()};setLocalStorage('currentUser',currentUser);setLocalStorage('playerProfile',playerProfile);const modal=document.getElementById('auth-modal');if(modal){modal.classList.remove('active');setTimeout(()=>modal.remove(),300);}showToast(`Bienvenue ${username} !`,'success');showScreen('home-screen');loadWeekOverview();}async function signUp(email,password,pseudo){return submitUsername();}async function signIn(email,password){return submitUsername();}async function signOut(){currentUser=null;playerProfile=null;weekData=null;setLocalStorage('currentUser',null);showToast('DÃ©connexion rÃ©ussie','success');showScreen('auth-screen');showAuthModal();}function initAuthListener(){}async function loadPlayerProfile(){playerProfile=getLocalStorage('playerProfile');if(!playerProfile&&currentUser){playerProfile={id:currentUser.id,pseudo:currentUser.username,email:'demo@quizdujour.fr',total_score:0,created_at:new Date().toISOString()};setLocalStorage('playerProfile',playerProfile);}}function showScreen(screenId){const screens=document.querySelectorAll('.screen');screens.forEach(screen=>screen.classList.remove('active'));const targetScreen=document.getElementById(screenId);if(targetScreen){targetScreen.classList.add('active');updateNavigation(screenId);}}function updateNavigation(screenId){const navItems=document.querySelectorAll('.nav-item');navItems.forEach(item=>{item.classList.remove('active');if(item.dataset.screen===screenId){item.classList.add('active');}});}function toggleMobileMenu(){const nav=document.querySelector('.bottom-nav');if(nav)nav.classList.toggle('open');}async function loadWeekOverview(){try{showLoading();const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});const sessions=allSessions[weekYear]||[];weekData={weekYear,sessions:sessions};await renderDayCards();await updateHomeStats();}catch(error){handleError(error,'Erreur lors du chargement de la semaine');}finally{hideLoading();}}async function renderDayCards(){const container=document.getElementById('days-container');if(!container)return;const currentDay=calculateCurrentDay();container.innerHTML='';for(let i=0;i<7;i++){const dayNum=i===6?0:i+1;const theme=THEMES.find(t=>t.day===dayNum);const session=weekData.sessions.find(s=>s.day_number===dayNum);const card=document.createElement('div');card.className='day-card';let statusBadge='';let statusClass='';let actionButton='';if(session){if(session.status==='qualified'){statusBadge='<span class="badge badge-success">â QualifiÃ©</span>';statusClass='completed';}else if(session.status==='eliminated'){statusBadge='<span class="badge badge-danger">â ÃliminÃ©</span>';statusClass='failed';actionButton=`<button class="btn btn-secondary btn-sm" onclick="app.showPassOptions(${dayNum})">Acheter un pass</button>`;}else if(session.status==='passed'){statusBadge='<span class="badge badge-warning">Pass utilisÃ©</span>';statusClass='completed';}}else if(dayNum===currentDay){statusBadge='<span class="badge badge-primary">Disponible</span>';statusClass='available';actionButton=`<button class="btn btn-primary" onclick="app.startQuiz(${dayNum})">Jouer maintenant</button>`;}else if(dayNum<currentDay){statusBadge='<span class="badge badge-secondary">ManquÃ©</span>';statusClass='missed';actionButton=`<button class="btn btn-secondary btn-sm" onclick="app.showPassOptions(${dayNum})">Acheter un pass</button>`;}else{statusBadge='<span class="badge badge-secondary">BientÃ´t</span>';statusClass='locked';}card.innerHTML=`<div class="day-card-header ${statusClass}"><div class="theme-icon">${theme.icon}</div><div class="day-info"><div class="day-name">${['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][dayNum]}</div><div class="theme-name">${theme.name}</div></div>${statusBadge}</div>${session?`<div class="day-score">Score: ${session.score} pts</div>`:''}${actionButton}`;container.appendChild(card);}}async function updateHomeStats(){const totalScoreEl=document.getElementById('total-score');const rankEl=document.getElementById('player-rank');if(totalScoreEl&&playerProfile){totalScoreEl.textContent=playerProfile.total_score||0;}if(rankEl){const allPlayers=[...FAKE_PLAYERS];if(playerProfile){allPlayers.push({pseudo:playerProfile.pseudo,total_score:playerProfile.total_score||0});}allPlayers.sort((a,b)=>b.total_score-a.total_score);const rank=allPlayers.findIndex(p=>p.pseudo===playerProfile?.pseudo)+1;rankEl.textContent=rank>0?`#${rank}`:'-';}}async function startQuiz(dayNumber){try{showLoading();const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});const sessions=allSessions[weekYear]||[];const existingSession=sessions.find(s=>s.day_number===dayNumber);if(existingSession&&existingSession.status!=='eliminated'){showToast('Vous avez dÃ©jÃ  jouÃ© ce quiz','warning');hideLoading();return;}const theme=THEMES.find(t=>t.day===dayNumber);const themeQuestions=QUESTION_BANK.filter(q=>q.theme===theme.key);if(themeQuestions.length<GAME_CONFIG.questionsPerQuiz){showToast('Pas assez de questions disponibles','error');hideLoading();return;}const shuffled=[...themeQuestions].sort(()=>Math.random()-0.5);const selectedQuestions=shuffled.slice(0,GAME_CONFIG.questionsPerQuiz);currentQuiz={dayNumber,theme:theme.key,questions:selectedQuestions,currentQuestionIndex:0,answers:[],startTime:Date.now(),timer:null,score:0};showScreen('quiz-screen');displayQuestion(0);hideLoading();}catch(error){handleError(error,'Erreur lors du chargement du quiz');}}function displayQuestion(index){if(index>=currentQuiz.questions.length){endQuiz();return;}currentQuiz.currentQuestionIndex=index;const question=currentQuiz.questions[index];const progressEl=document.getElementById('quiz-progress');const questionTextEl=document.getElementById('question-text');const optionsEl=document.getElementById('quiz-options');const questionNumEl=document.getElementById('question-number');if(progressEl){progressEl.style.width=`${((index+1)/GAME_CONFIG.questionsPerQuiz)*100}%`;}if(questionNumEl){questionNumEl.textContent=`Question ${index+1}/${GAME_CONFIG.questionsPerQuiz}`;}if(questionTextEl){questionTextEl.textContent=question.question_text;}if(optionsEl){optionsEl.innerHTML='';const options=[question.option_a,question.option_b,question.option_c,question.option_d];options.forEach((option,i)=>{const button=document.createElement('button');button.className='quiz-option';button.textContent=option;button.onclick=()=>selectAnswer(i);optionsEl.appendChild(button);});}startTimer();}function startTimer(){stopTimer();const timerEl=document.getElementById('timer-circle');const timeTextEl=document.getElementById('time-text');let timeLeft=GAME_CONFIG.timerSeconds;if(timeTextEl)timeTextEl.textContent=timeLeft;currentQuiz.questionStartTime=Date.now();currentQuiz.timer=setInterval(()=>{timeLeft--;if(timeTextEl)timeTextEl.textContent=timeLeft;if(timerEl){const progress=(timeLeft/GAME_CONFIG.timerSeconds)*283;timerEl.style.strokeDashoffset=283-progress;if(timeLeft<=5){timerEl.classList.add('warning');}}if(timeLeft<=0){stopTimer();selectAnswer(null);}},1000);}function stopTimer(){if(currentQuiz.timer){clearInterval(currentQuiz.timer);currentQuiz.timer=null;}const timerEl=document.getElementById('timer-circle');if(timerEl){timerEl.classList.remove('warning');}}function selectAnswer(optionIndex){stopTimer();const question=currentQuiz.questions[currentQuiz.currentQuestionIndex];const timeSpent=Math.floor((Date.now()-currentQuiz.questionStartTime)/1000);const answerTime=Math.min(timeSpent,GAME_CONFIG.timerSeconds);let isCorrect=false;let pointsEarned=0;if(optionIndex!==null){isCorrect=optionIndex===question.correct_answer;if(isCorrect){const difficultyIndex=Math.min(question.difficulty-1,2);pointsEarned=GAME_CONFIG.pointsCorrect[difficultyIndex];if(answerTime<=10){pointsEarned+=GAME_CONFIG.bonusTimePoints;}}else{const difficultyIndex=Math.min(question.difficulty-1,2);pointsEarned=GAME_CONFIG.pointsWrong[difficultyIndex];}}currentQuiz.score+=pointsEarned;currentQuiz.answers.push({question_id:question.id,selected_answer:optionIndex!==null?['a','b','c','d'][optionIndex]:null,is_correct:isCorrect,time_spent:answerTime,points_earned:pointsEarned});showAnswerFeedback(optionIndex,question.correct_answer,isCorrect,pointsEarned);}function showAnswerFeedback(selectedIndex,correctIndex,isCorrect,pointsEarned){const options=document.querySelectorAll('.quiz-option');options.forEach((option,i)=>{option.disabled=true;if(i===correctIndex){option.classList.add('correct');}if(selectedIndex!==null&&i===selectedIndex&&!isCorrect){option.classList.add('wrong');}});const feedbackEl=document.getElementById('answer-feedback');if(feedbackEl){feedbackEl.innerHTML=`<div class="feedback ${isCorrect?'correct':'wrong'}"><div class="feedback-icon">${isCorrect?'â':'â'}</div><div class="feedback-text">${isCorrect?'Bonne rÃ©ponse !':'Mauvaise rÃ©ponse'}</div><div class="feedback-points">${formatScore(pointsEarned)} pts</div></div>`;feedbackEl.style.display='block';}setTimeout(()=>{if(feedbackEl)feedbackEl.style.display='none';nextQuestion();},2000);}function nextQuestion(){const nextIndex=currentQuiz.currentQuestionIndex+1;if(nextIndex<currentQuiz.questions.length){displayQuestion(nextIndex);}else{endQuiz();}}async function endQuiz(){try{showLoading();stopTimer();const correctAnswers=currentQuiz.answers.filter(a=>a.is_correct).length;const percentageCorrect=(correctAnswers/GAME_CONFIG.questionsPerQuiz)*100;const dayIndex=currentQuiz.dayNumber===0?6:currentQuiz.dayNumber-1;const threshold=GAME_CONFIG.qualificationThresholds[dayIndex];const isQualified=percentageCorrect>=threshold;const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});if(!allSessions[weekYear]){allSessions[weekYear]=[];}const existingIndex=allSessions[weekYear].findIndex(s=>s.day_number===currentQuiz.dayNumber);const sessionData={player_id:currentUser.id,week_year:weekYear,day_number:currentQuiz.dayNumber,theme:currentQuiz.theme,score:currentQuiz.score,status:isQualified?'qualified':'eliminated',created_at:new Date().toISOString()};if(existingIndex>=0){allSessions[weekYear][existingIndex]=sessionData;}else{allSessions[weekYear].push(sessionData);}setLocalStorage('gameSessions',allSessions);playerProfile.total_score=(playerProfile.total_score||0)+currentQuiz.score;setLocalStorage('playerProfile',playerProfile);const history=getLocalStorage('gameHistory',{});if(!history[currentUser.id]){history[currentUser.id]=[];}history[currentUser.id].unshift({...sessionData,answers:currentQuiz.answers});if(history[currentUser.id].length>20){history[currentUser.id]=history[currentUser.id].slice(0,20);}setLocalStorage('gameHistory',history);await loadPlayerProfile();await loadWeekOverview();showResults({score:currentQuiz.score,correctAnswers,totalQuestions:GAME_CONFIG.questionsPerQuiz,percentageCorrect:Math.round(percentageCorrect),threshold,isQualified,dayNumber:currentQuiz.dayNumber});hideLoading();}catch(error){handleError(error,'Erreur lors de la sauvegarde des rÃ©sultats');}}function showResults(gameResult){showScreen('results-screen');const theme=THEMES.find(t=>t.day===gameResult.dayNumber);const themeEl=document.getElementById('result-theme');if(themeEl){themeEl.textContent=theme.name;themeEl.insertAdjacentHTML('afterbegin',theme.icon+' ');}const scoreEl=document.getElementById('result-score');if(scoreEl){let displayScore=0;const increment=Math.ceil(gameResult.score/50);const interval=setInterval(()=>{displayScore+=increment;if(displayScore>=gameResult.score){displayScore=gameResult.score;clearInterval(interval);}scoreEl.textContent=displayScore;},30);}const correctEl=document.getElementById('result-correct');if(correctEl){correctEl.textContent=`${gameResult.correctAnswers}/${gameResult.totalQuestions}`;}const percentageEl=document.getElementById('result-percentage');if(percentageEl){percentageEl.textContent=`${gameResult.percentageCorrect}%`;}const statusEl=document.getElementById('result-status');const statusMessageEl=document.getElementById('result-status-message');const actionsEl=document.getElementById('result-actions');if(gameResult.isQualified){if(statusEl){statusEl.className='result-status qualified';statusEl.innerHTML='<div class="status-icon">ð</div><div class="status-text">QualifiÃ© !</div>';}if(statusMessageEl){statusMessageEl.textContent='FÃ©licitations ! Vous Ãªtes qualifiÃ© pour le tirage au sort.';}if(actionsEl){actionsEl.innerHTML=`<button class="btn btn-primary" onclick="app.navigateToHome()">Retour Ã  l\'accueil</button><button class="btn btn-secondary" onclick="app.shareResult(${gameResult.score}, ${gameResult.percentageCorrect})">Partager</button>`;}}else{if(statusEl){statusEl.className='result-status eliminated';statusEl.innerHTML='<div class="status-icon">ð¢</div><div class="status-text">ÃliminÃ©</div>';}if(statusMessageEl){statusMessageEl.innerHTML=`Seuil requis : ${gameResult.threshold}%<br>Vous pouvez acheter un pass pour rejouer.`;}if(actionsEl){actionsEl.innerHTML=`<button class="btn btn-primary" onclick="app.showPassOptions(${gameResult.dayNumber})">Acheter un pass</button><button class="btn btn-secondary" onclick="app.navigateToHome()">Retour Ã  l\'accueil</button>`;}}}function shareResult(score,percentage){const text=`ð¯ Quiz du Jour\nâ¨ Score: ${score} points\nð RÃ©ussite: ${percentage}%\n\nRejoins-moi sur Quiz du Jour !`;if(navigator.share){navigator.share({title:'Quiz du Jour',text:text}).catch(err=>console.log('Share failed:',err));}else{navigator.clipboard.writeText(text).then(()=>{showToast('RÃ©sultat copiÃ© !','success');}).catch(err=>{showToast('Erreur lors de la copie','error');});}}async function loadLeaderboard(period='week'){try{showLoading();showScreen('leaderboard-screen');const allPlayers=[...FAKE_PLAYERS];if(playerProfile){allPlayers.push({pseudo:playerProfile.pseudo,total_score:playerProfile.total_score||0});}allPlayers.sort((a,b)=>b.total_score-a.total_score);renderLeaderboard(allPlayers,period);hideLoading();}catch(error){handleError(error,'Erreur lors du chargement du classement');}}function renderLeaderboard(data,period){const container=document.getElementById('leaderboard-list');if(!container)return;container.innerHTML='';if(data.length===0){container.innerHTML='<div class="empty-state">Aucun joueur pour le moment</div>';return;}data.forEach((player,index)=>{const isCurrentPlayer=player.pseudo===playerProfile?.pseudo;const rank=index+1;const item=document.createElement('div');item.className=`leaderboard-item ${isCurrentPlayer?'current-player':''}`;let rankDisplay=rank;let medalClass='';if(rank===1){rankDisplay='ð¥';medalClass='gold';}else if(rank===2){rankDisplay='ð¥';medalClass='silver';}else if(rank===3){rankDisplay='ð¥';medalClass='bronze';}item.innerHTML=`<div class="rank ${medalClass}">${rankDisplay}</div><div class="player-info"><div class="player-avatar">ð¤</div><div class="player-name">${player.pseudo}${isCurrentPlayer?' (Vous)':''}</div></div><div class="player-score">${player.total_score} pts</div>`;container.appendChild(item);});}function filterLeaderboard(period){const buttons=document.querySelectorAll('.leaderboard-filters button');buttons.forEach(btn=>{btn.classList.toggle('active',btn.dataset.period===period);});loadLeaderboard(period);}function showPassOptions(dayNumber){showScreen('shop-screen');const theme=THEMES.find(t=>t.day===dayNumber);const dayIndex=dayNumber===0?6:dayNumber-1;const price=GAME_CONFIG.passPrices[dayIndex];const container=document.getElementById('shop-content');if(!container)return;container.innerHTML=`<div class="shop-header"><h2>Acheter un pass</h2><p>Rejouez le quiz et tentez de vous qualifier !</p></div><div class="pass-card"><div class="pass-theme"><span class="theme-icon-large">${theme.icon}</span><h3>${theme.name}</h3></div><div class="pass-price">${price}â¬</div><ul class="pass-features"><li>â AccÃ¨s illimitÃ© au quiz du jour</li><li>â Nouvelles questions Ã  chaque tentative</li><li>â Qualification possible pour le tirage</li></ul><button class="btn btn-primary btn-lg" onclick="app.purchasePass('day', ${dayNumber}, ${price})">Acheter maintenant</button></div><div class="shop-divider">ou</div><div class="pass-card buyback-card"><div class="pass-theme"><span class="theme-icon-large">ð«</span><h3>Pass Rachat</h3></div><div class="pass-price">${GAME_CONFIG.buybackPrice}â¬</div><p class="pass-description">Participez au tirage mÃªme si vous Ãªtes Ã©liminÃ©. Valable pour le tirage en cours.</p><button class="btn btn-secondary btn-lg" onclick="app.purchaseBuyback(${GAME_CONFIG.buybackPrice})">Acheter le rachat</button></div>`;}async function purchasePass(passType,dayNumber,amount){try{showLoading();await new Promise(resolve=>setTimeout(resolve,1000));const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});if(!allSessions[weekYear]){allSessions[weekYear]=[];}const sessionIndex=allSessions[weekYear].findIndex(s=>s.day_number===dayNumber);if(sessionIndex>=0){allSessions[weekYear].splice(sessionIndex,1);setLocalStorage('gameSessions',allSessions);}const purchases=getLocalStorage('purchases',{});if(!purchases[currentUser.id]){purchases[currentUser.id]=[];}purchases[currentUser.id].push({type:passType,day_number:dayNumber,amount:amount,week_year:weekYear,purchased_at:new Date().toISOString()});setLocalStorage('purchases',purchases);hideLoading();showToast('Pass achetÃ© avec succÃ¨s ! Vous pouvez maintenant rejouer.','success');await loadWeekOverview();}catch(error){handleError(error,'Erreur lors de l\'achat du pass');}}async function purchaseBuyback(amount){try{showLoading();await new Promise(resolve=>setTimeout(resolve,1000));const weekYear=getCurrentWeekYear();const purchases=getLocalStorage('purchases',{});if(!purchases[currentUser.id]){purchases[currentUser.id]=[];}purchases[currentUser.id].push({type:'buyback',amount:amount,week_year:weekYear,purchased_at:new Date().toISOString()});setLocalStorage('purchases',purchases);const allSessions=getLocalStorage('gameSessions',{});if(allSessions[weekYear]){allSessions[weekYear].forEach(session=>{if(session.player_id===currentUser.id&&session.status==='eliminated'){session.status='passed';}});}setLocalStorage('gameSessions',allSessions);hideLoading();showToast('Pass rachat achetÃ© ! Vous Ãªtes qualifiÃ© pour le tirage.','success');await loadWeekOverview();}catch(error){handleError(error,'Erreur lors de l\'achat du rachat');}}function handlePaymentReturn(){}async function loadProfile(){try{showLoading();showScreen('profile-screen');await loadPlayerProfile();const history=getLocalStorage('gameHistory',{});const userHistory=history[currentUser.id]||[];const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});const stats=allSessions[weekYear]||[];renderProfile(playerProfile,stats,userHistory.slice(0,10));hideLoading();}catch(error){handleError(error,'Erreur lors du chargement du profil');}}function renderProfile(profile,stats,history){const profileHeader=document.getElementById('profile-header');if(profileHeader){profileHeader.innerHTML=`<div class="profile-avatar">ð¤</div><h2>${profile.pseudo}</h2><p>${profile.email}</p>`;}const totalGames=history.length;const qualified=stats.filter(s=>s.status==='qualified').length;const totalScore=profile.total_score||0;const avgScore=totalGames>0?Math.round(totalScore/totalGames):0;const statsContainer=document.getElementById('profile-stats');if(statsContainer){statsContainer.innerHTML=`<div class="stat-card"><div class="stat-value">${totalGames}</div><div class="stat-label">Quiz jouÃ©s</div></div><div class="stat-card"><div class="stat-value">${qualified}</div><div class="stat-label">Qualifications</div></div><div class="stat-card"><div class="stat-value">${totalScore}</div><div class="stat-label">Score total</div></div><div class="stat-card"><div class="stat-value">${avgScore}</div><div class="stat-label">Score moyen</div></div>`;}const historyContainer=document.getElementById('game-history');if(historyContainer){if(history.length===0){historyContainer.innerHTML='<div class="empty-state">Aucun historique</div>';}else{historyContainer.innerHTML=history.map(game=>{const theme=THEMES.find(t=>t.key===game.theme);let statusBadge='';if(game.status==='qualified'){statusBadge='<span class="badge badge-success">QualifiÃ©</span>';}else if(game.status==='eliminated'){statusBadge='<span class="badge badge-danger">ÃliminÃ©</span>';}else if(game.status==='passed'){statusBadge='<span class="badge badge-warning">Pass</span>';}return`<div class="history-item"><div class="history-theme"><span class="theme-icon">${theme?.icon||'â'}</span><div><div class="history-theme-name">${theme?.name||'Inconnu'}</div><div class="history-date">${formatDate(game.created_at)}</div></div></div><div class="history-score">${game.score} pts</div>${statusBadge}</div>`;}).join('');}}}async function loadDrawInfo(){try{showLoading();showScreen('draw-screen');const weekYear=getCurrentWeekYear();const allSessions=getLocalStorage('gameSessions',{});const sessions=allSessions[weekYear]||[];const qualifiedPlayers=[];sessions.forEach(session=>{if(session.status==='qualified'||session.status==='passed'){const existingPlayer=qualifiedPlayers.find(p=>p.player_id===session.player_id);if(existingPlayer){existingPlayer.total_score+=session.score;}else{qualifiedPlayers.push({player_id:session.player_id,pseudo:session.player_id===currentUser?.id?playerProfile.pseudo:'Joueur '+Math.floor(Math.random()*1000),total_score:session.score});}}});qualifiedPlayers.sort((a,b)=>b.total_score-a.total_score);const draws=getLocalStorage('draws',{});const draw=draws[weekYear]||null;renderDrawInfo(draw,qualifiedPlayers);hideLoading();}catch(error){handleError(error,'Erreur lors du chargement du tirage');}}function renderDrawInfo(draw,qualified){const drawHeader=document.getElementById('draw-header');const qualifiedList=document.getElementById('qualified-players-list');const drawStatus=document.getElementById('draw-status');if(drawHeader){drawHeader.innerHTML=`<h2>ð² Tirage au Sort</h2><p>Semaine ${getCurrentWeekYear()}</p>`;}if(qualifiedList){if(qualified.length===0){qualifiedList.innerHTML='<div class="empty-state">Aucun joueur qualifiÃ© pour le moment</div>';}else{qualifiedList.innerHTML=qualified.map((entry,index)=>`<div class="qualified-item"><div class="qualified-rank">#${index+1}</div><div class="qualified-avatar">ð¤</div><div class="qualified-name">${entry.pseudo}</div></div>`).join('');}}if(drawStatus){if(draw?.winner_id){const winner=qualified.find(q=>q.player_id===draw.winner_id);drawStatus.innerHTML=`<div class="draw-completed"><h3>ð Gagnant de la semaine</h3><div class="winner-card"><div class="winner-avatar">ð¤</div><div class="winner-name">${winner?.pseudo||'Inconnu'}</div><div class="winner-prize">A remportÃ© le tirage !</div></div></div>`;}else{const isPlayerQualified=qualified.some(q=>q.player_id===currentUser?.id);drawStatus.innerHTML=`<div class="draw-pending"><h3>Le tirage aura lieu dimanche soir</h3><p>${qualified.length} joueur${qualified.length>1?'s':''} qualifiÃ©${qualified.length>1?'s':''}</p>${isPlayerQualified?'<p class="qualified-message">â Vous Ãªtes qualifiÃ© !</p>':''}${!isPlayerQualified?`<button class="btn btn-primary" onclick="app.purchaseBuyback(${GAME_CONFIG.buybackPrice})">Acheter un rachat (${GAME_CONFIG.buybackPrice}â¬)</button>`:''}</div>`;}}}function performDrawAnimation(){showToast('Animation du tirage...','info');}function initEventHandlers(){const signUpForm=document.getElementById('signup-form');if(signUpForm){signUpForm.addEventListener('submit',async(e)=>{e.preventDefault();submitUsername();});}const signInForm=document.getElementById('signin-form');if(signInForm){signInForm.addEventListener('submit',async(e)=>{e.preventDefault();submitUsername();});}const navItems=document.querySelectorAll('.nav-item');navItems.forEach(item=>{item.addEventListener('click',()=>{const screen=item.dataset.screen;if(screen==='home-screen'){loadWeekOverview();}else if(screen==='leaderboard-screen'){loadLeaderboard();}else if(screen==='shop-screen'){const currentDay=calculateCurrentDay();showPassOptions(currentDay);}else if(screen==='profile-screen'){loadProfile();}else if(screen==='draw-screen'){loadDrawInfo();}else{showScreen(screen);}});});const signOutBtn=document.getElementById('signout-btn');if(signOutBtn){signOutBtn.addEventListener('click',signOut);}const authToggle=document.querySelectorAll('.auth-toggle');authToggle.forEach(toggle=>{toggle.addEventListener('click',()=>{const target=toggle.dataset.target;document.querySelectorAll('.auth-form').forEach(form=>{form.style.display=form.id===target?'block':'none';});});});const leaderboardFilters=document.querySelectorAll('.leaderboard-filters button');leaderboardFilters.forEach(button=>{button.addEventListener('click',()=>{filterLeaderboard(button.dataset.period);});});}function navigateToHome(){loadWeekOverview();}function init(){try{const savedUser=getLocalStorage('currentUser');const savedProfile=getLocalStorage('playerProfile');if(savedUser&&savedProfile){currentUser=savedUser;playerProfile=savedProfile;showScreen('home-screen');loadWeekOverview();}else{showScreen('auth-screen');setTimeout(()=>showAuthModal(),500);}initEventHandlers();}catch(error){console.error('Init error:',error);showScreen('auth-screen');setTimeout(()=>showAuthModal(),500);}}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}window.app={startQuiz,showPassOptions,purchasePass,purchaseBuyback,shareResult,filterLeaderboard,navigateToHome,loadLeaderboard,loadProfile,loadDrawInfo,signOut,submitUsername};})();
+</script>
+</body>
